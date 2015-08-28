@@ -1,0 +1,31 @@
+{
+  "name": "vingle",
+  "version": "1.0.0",
+  "description": "Single page app magic for traditional webpages",
+  "main": "vingle.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mmaelzer/vingle"
+  },
+  "keywords": [
+    "spa",
+    "single-page-app",
+    "magic",
+    "virtual-dom",
+    "vdom"
+  ],
+  "author": "Mike Maelzer <mmaelzer@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mmaelzer/vingle/issues"
+  },
+  "homepage": "https://github.com/mmaelzer/vingle",
+  "dependencies": {
+    "html-to-vdom": "^0.7.0",
+    "superagent": "^1.3.0",
+    "virtual-dom": "^2.1.1"
+  }
+}
