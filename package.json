@@ -1,7 +1,7 @@
 {
   "name": "vingle",
-  "version": "1.0.0",
-  "description": "Single page app magic for traditional webpages",
+  "version": "1.0.1",
+  "description": "Single page app magic for traditional webpages via virtual-dom",
   "main": "vingle.js",
   "scripts": {
     "test": "npm test"

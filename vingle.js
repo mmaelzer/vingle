@@ -43,5 +43,6 @@ module.exports = function(url, query, headers) {
   req.end(function(err, res) {
     if (err) throw new Error(err);
     replaceHTML(res.text);
+    window.history.pushState({}, null, url);
   });
 };
