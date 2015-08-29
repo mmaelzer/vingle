@@ -10,6 +10,13 @@ var convert = require('html-to-vdom')({
   VText: VText
 });
 
+function copyAttributes(src, dest) {
+  for (var i = 0, len = src.attributes.length; i < len; i++) {
+    var attr = src.attributes[i];
+    dest.setAttribute(attr.name, attr.value);
+  }
+}
+
 function replaceHTML(newHtml) {
   var doc = document.documentElement.cloneNode(true);
   var tmp = document.createElement('div');
@@ -32,7 +39,21 @@ function getVNode(vnode) {
   return vnode;
 }
 
+function reloadScripts() {
+  var scripts = document.getElementsByTagName('script');
+  for (var i = 0, len = scripts.length; i < len; i++) {
+    var oldScript = scripts[i];
+    var parent = oldScript.parentNode;
+    var newScript = document.createElement('script');
+    newScript.src = oldScript.src;
+    copyAttributes(oldScript, newScript);
+    oldScript.remove();
+    parent.appendChild(newScript);
+  }
+}
+
 module.exports = function(url, query, headers) {
+  if (url.indexOf('#') >= 0) return true;
   var req = request.get(url).set('Accept', 'text/html');
   if (query) req.query(query);
   if (headers) {
@@ -44,5 +65,7 @@ module.exports = function(url, query, headers) {
     if (err) throw new Error(err);
     replaceHTML(res.text);
     window.history.pushState({}, null, url);
+    reloadScripts();
   });
+  return false;
 };
