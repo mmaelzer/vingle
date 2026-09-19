@@ -4,7 +4,7 @@
   "description": "Single page app magic for traditional webpages via virtual-dom",
   "main": "vingle.js",
   "scripts": {
-    "test": "npm test"
+    "test": "node --test test.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,14 @@
   "homepage": "https://github.com/mmaelzer/vingle",
   "dependencies": {
     "html-to-vdom": "^0.7.0",
-    "superagent": "^1.3.0",
     "virtual-dom": "^2.1.1"
-  }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "vingle.js",
+    "url.js",
+    "readme.md"
+  ]
 }

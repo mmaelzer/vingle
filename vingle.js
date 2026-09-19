@@ -1,6 +1,6 @@
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
-var request = require('superagent');
+var appendQuery = require('./url');
 
 var VNode = require('virtual-dom/vnode/vnode');
 var VText = require('virtual-dom/vnode/vtext');
@@ -54,18 +54,36 @@ function reloadScripts() {
 
 module.exports = function(url, query, headers) {
   if (url.indexOf('#') >= 0) return true;
-  var req = request.get(url).set('Accept', 'text/html');
-  if (query) req.query(query);
+
+  var requestHeaders = { Accept: 'text/html' };
   if (headers) {
     for (var h in headers) {
-      req.set(h, headers[h]);  
+      requestHeaders[h] = headers[h];
     }
   }
-  req.end(function(err, res) {
-    if (err) throw new Error(err);
-    replaceHTML(res.text);
-    window.history.pushState({}, null, url);
-    reloadScripts();
-  });
+
+  // superagent defaulted to sending cookies for same-origin requests and fetch
+  // does too, but it is worth being explicit about which one this is.
+  fetch(appendQuery(url, query), {
+    headers: requestHeaders,
+    credentials: 'same-origin'
+  })
+    .then(function(res) {
+      // fetch resolves on 4xx and 5xx; superagent did not. Keep the old
+      // behaviour of treating them as failures.
+      if (!res.ok) {
+        throw new Error('vingle: ' + url + ' responded ' + res.status);
+      }
+      return res.text();
+    })
+    .then(function(html) {
+      replaceHTML(html);
+      window.history.pushState({}, null, url);
+      reloadScripts();
+    });
+  // No catch, deliberately: this used to throw out of superagent's callback as
+  // an uncaught error, and an unhandled rejection is the same signal. Attach a
+  // window 'unhandledrejection' listener to observe it.
+
   return false;
 };
